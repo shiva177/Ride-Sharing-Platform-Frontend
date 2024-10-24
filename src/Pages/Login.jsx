@@ -2,17 +2,35 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const [userId, setUserId] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('traveller'); // Default role
   const navigate = useNavigate();
+  const [emailError, setEmailError] = useState('');
+
+  const validateEmail = (email) => {
+    // Simple email validation regex
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
 
   const handleLogin = () => {
+    if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    setEmailError(''); // Clear any previous errors
+
     // Mock authentication
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
-    if (storedUser && storedUser.username === username && storedUser.password === password && storedUser.role === role) {
+    if (
+      storedUser &&
+      storedUser.email === email &&
+      storedUser.password === password &&
+      storedUser.role === role
+    ) {
       localStorage.setItem('loggedIn', true);
       localStorage.setItem('role', role);
 
@@ -32,20 +50,13 @@ const Login = () => {
         </h2>
 
         <input
-          type="text"
-          className="p-4 border border-gray-300 rounded-lg w-full mb-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          placeholder="UserId"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-        />
-
-        <input
           type="email"
           className="p-4 border border-gray-300 rounded-lg w-full mb-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {emailError && <p className="text-red-500 text-sm mb-4">{emailError}</p>}
 
         <input
           type="password"
