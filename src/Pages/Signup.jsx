@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -21,7 +22,7 @@ const Signup = () => {
     return regex.test(email);
   };
 
-  const handleSignup = () => {
+  const handleSignup =  async () => {
     let valid = true;
 
     // Reset error messages
@@ -58,20 +59,55 @@ const Signup = () => {
     }
 
     // Simulate saving the user data (e.g., localStorage or API)
-    const userData = {
-      email,
-      username,
-      password,
-      phonenumber,
-      role,
-      ...(role === 'Driver' && { cabNumber }) // Add cabNumber only if the role is Driver
+    // const userData = {
+    //   email,
+    //   username,
+    //   password,
+    //   phonenumber,
+    //   role,
+    //   ...(role === 'Driver' && { cabNumber }) // Add cabNumber only if the role is Driver
+    // };
+
+    var userRole = "TRAVELER";
+    var myCab = cabNumber;
+    if (role === 'Driver') {
+      userRole = "DRIVER"
+    } else {
+      myCab = -1;
+    }
+
+    var signUpData = {
+      "email": email,
+      "password": password,
+      "name": username,
+      "role": userRole,
+      "phoneNumber": phonenumber,
+      "cabNumber": myCab,
+      "currentLatitude": 0.0,
+      "currentLongitude": 0.0,
+      "tripIds": []
     };
-    localStorage.setItem('user', JSON.stringify(userData));
+
+    try {
+      const res = await axios.post('http://localhost:8123/users/signup', signUpData);
+      if (res.status == 201) {
+        localStorage.setItem('user', JSON.stringify(res.data));
+        var myRole = res.data.role;
+        if (myRole === 'ADMIN') navigate('/admin');
+        else if (myRole === 'TRAVELER') navigate('/traveller');
+        else if (myRole === 'DRIVER') navigate('/Driver');
+      }
+      else {
+        alert('Try again please');
+      }
+    } catch(error) {
+      alert('Try again please ', error.message);
+    }
+
+
+
 
     // Redirect based on role after signup
-    if (role === 'admin') navigate('/admin');
-    else if (role === 'traveller') navigate('/traveller');
-    else if (role === 'Driver') navigate('/Driver');
   };
 
   return (

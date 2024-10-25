@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ const Login = () => {
     return regex.test(email);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       return;
@@ -22,21 +23,22 @@ const Login = () => {
 
     setEmailError(''); // Clear any previous errors
 
-    // Mock authentication
-    const storedUser = JSON.parse(localStorage.getItem('user'));
+    var myLoginData = {
+      "email": email,
+      "password": password
+    };
 
-    if (
-      storedUser &&
-      storedUser.email === email &&
-      storedUser.password === password &&
-      storedUser.role === role
-    ) {
+    const res = await axios.post('http://localhost:8123/users/login', myLoginData);
+    // console.log(res);
+
+    if (res.status == 200) {
       localStorage.setItem('loggedIn', true);
-      localStorage.setItem('role', role);
+      localStorage.setItem('role', res.data.role);
+      var role = res.data.role;
 
-      if (role === 'admin') navigate('/admin');
-      else if (role === 'traveller') navigate('/traveller');
-      else if (role === 'traveller-companion') navigate('/traveller-companion');
+      if (role == 'ADMIN') navigate('/admin');
+      else if (role == 'TRAVELER') navigate('/traveller');
+      else if (role == 'DRIVER') navigate('/traveller-companion');
     } else {
       alert('Invalid credentials or role mismatch!');
     }
@@ -84,7 +86,7 @@ const Login = () => {
         </button>
 
         <p className="text-center text-gray-600 mt-4">
-          Don't have an account?{' '}
+          Dont have an account?{' '}
           <a href="/signup" className="text-indigo-600 hover:underline">
             Signup
           </a>

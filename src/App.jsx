@@ -7,13 +7,15 @@ import AdminPage from "./pages/AdminPage";
 import TravellerPage from "./pages/TravellerPage";
 import TravellerCompanionPage from "./pages/TravellerCompanionPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+// import Map from './components/Map';
+import './App.css';
 import PublicRoute from './components/PublicRoute'; // Add this import
 
 function App() {
   return (
     <Router>
       <Navbar />
+      {/* <Map/> */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         

@@ -20,7 +20,7 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('loggedIn');
+    localStorage.setItem('loggedIn', false);
     localStorage.removeItem('role');
     localStorage.removeItem('user');
     setIsLoggedIn(false);
