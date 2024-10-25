@@ -72,10 +72,8 @@ Login: On the login form submission, send a POST request to your backend API (e.
 Step 2: Role-Based Authentication
 Your backend should return the role of the logged-in user, and this should be stored in localStorage as shown in the example above. Based on this role, the frontend will decide which dashboard to display.
 
-Step 3: Token Authentication
-For secure API communication, you should store a JWT (or other token) in localStorage after login and include it in the headers of subsequent API requests.
 
-Step 5: Protected Routes
+Step 3: Protected Routes
 In the backend, protect certain routes (e.g., /admin, /traveller) based on the user’s role. The frontend expects this behavior and restricts navigation accordingly.
 
 Future Improvements:
